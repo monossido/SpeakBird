@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SpeakBird</string>
+    <string name="mentions">Menzioni</string>
+    <string name="settings">Impostazioni</string>
+    <string name="lastMention">Ultima menzione da:</string>
+    <string name="status">Stato</string>
+    <string name="dialogCheck">Senza l\'autenticazione a Twitter o le librerie Text To Speech l\'applicazione non si avvierà</string>
+    <string name="controllerAll">Tutte le menzioni a partire da quella cliccata verranno riprodotte</string>
+    <string name="controller">Solo la menzione cliccata verrà riprodotta</string>
+    <string name="preferenceTitle">Impostazioni di SpeakBird</string>
+    <string name="interval">Intervallo di aggiornamento</string>
+    <string name="minuts">In minuti</string>
+    <string name="mode">Parla immediatamente all\'arrivo di un tweet oppure mostra una notifica</string>
+    <string name="modeTitle">Modalità</string>
+    <string name="speakNotifing">Parla per avvisare di una nuova notifica</string>
+    <string name="speakNotifingTitle">Avvisa di una nuova notifica</string>
+    <string name="automaticSAP">Attiva automaticamente la modalità \"Speak as Pull\" quando vengono inserite delle cuffie</string>
+    <string name="automaticSAPTitle">Cuffie</string>
+    <string name="onMusic">Attiva automaticamente la modalità \"Speak as Pull\" quando stai ascoltando musica o stai giocando</string>
+    <string name="onMusicTitle">Musica</string>
+    <string name="notificationSpeaking">Mostra una notifica mentre l\'applicazione sta parlando</string>
+    <string name="notificationSpeakingTitle">Mostra notifica</string>
+    <string name="language">Forza l\'uso di una lingua diversa per la voce, di default viene usata la lingua di sistema</string>
+    <string name="languageTitle">Forza una lingua diversa</string>
+    <string name="autorize">Per favore autorizza l\'applicazione!</string>
+    <string name="autorizeerror">errore nel richiedere l\'autorizzazione</string>
+    <string name="pause">Pausa</string>
+    <string name="controls">Controlli</string>
+    <string name="newm">Nuova menzione</string>
+    <string name="isSpeaking">Speakbird sta parlando</string>
+    <string name="isSpeakingC">Speakbird sta parlando - clicca per interrompere</string>
+    <string name="wSpeaking">Speakbird vuole parlare</string>
+    <string name="top">Ritorna all\'inizio</string>
+    <string name="errorconnection">Connessione non disponibile</string>
+    <string name="account_description">Intervallo di aggiornamento, modalità, etc.</string>
+    <string name="tap">Clicca sull\'icona(e) rossa per risolvere il problema</string>
+    <string name="missing">Manca qualcosa</string>
+    <string name="newaccount">Un account SpeakBird è stato aggiunto alla gestione account di Android</string>
+
+</resources>

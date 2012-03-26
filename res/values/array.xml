@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="listArray">
+   <item>Speak as pull</item>
+   <item>Notification</item>
+</string-array>
+ 
+<string-array name="listValues">
+   <item>speakASpull</item>
+   <item>notification</item>
+</string-array>
+
+<string-array name="languageArray">
+   <item>Default</item>
+   <item>UK</item>
+   <item>US</item>
+   <item>French</item>
+   <item>Italian</item>
+   <item>Spanish</item>
+   <item>German</item>
+</string-array>
+ 
+<string-array name="listLanguage">
+   <item>Default</item>
+   <item>UK</item>
+   <item>US</item>
+   <item>FRENCH</item>
+   <item>ITALIAN</item>
+   <item>SPANISH</item>
+   <item>GERMAN</item>
+</string-array>
+</resources>

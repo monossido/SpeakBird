@@ -1,0 +1,42 @@
+SpeakBird, using the Android TTS, reads the mentions(and more!) you receive on Twitter.
+
+com.lorenzobraghetto.speakbird.Sync 	-> Android sync related stuff
+com.lorenzobraghetto.speakbird.Logic 	-> Application logic stuff
+com.lorenzobraghetto.speakbird.View	-> Application View/Activity stuff
+
+I welcome every contribution to this project, via pull request or with suggestion via email (monossido@lorenzobraghetto.com)
+To build SpeakBird you have to use this libraries:
+
+oauth-signpost:
+http://code.google.com/p/oauth-signpost/ (signpost-commonshttp signpost-core)
+
+twitter4j:
+http://twitter4j.org/en/index.html
+
+ActionBarSherlock:
+http://actionbarsherlock.com/
+
+Android-PullToRefresh:
+https://github.com/chrisbanes/Android-PullToRefresh
+
+UrlImageViewHelper:
+https://github.com/koush/UrlImageViewHelper
+
+----------------------------------------------------------------------------------------
+
+SpeakBird is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Copyright 2012
+	Lorenzo Braghetto monossido@lorenzobraghetto.com

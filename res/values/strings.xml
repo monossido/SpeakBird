@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SpeakBird</string>
+    <string name="mentions">Mentions</string>
+    <string name="settings">Settings</string>
+    <string name="lastMention">Last mention by:</string>
+    <string name="status">Status</string>
+    <string name="dialogCheck">Without the authentication to Twitter or the Text to Speech libraries the application will not start</string>
+    <string name="controllerAll">All mentions from the one clicked will play</string>
+    <string name="controller">Just the mentions clicked will be played</string>
+    <string name="preferenceTitle">SpeakBird Preferences</string>
+    <string name="interval">Update Interval</string>
+    <string name="minuts">In minutes</string>
+    <string name="mode">Talk immediately upon arrival of a tweet or display a notification</string>
+    <string name="modeTitle">Mode</string>
+    <string name="speakNotifing">Speaks to report a new notification</string>
+    <string name="speakNotifingTitle">Warns of a new notification</string>
+    <string name="automaticSAP">Automatically switches to \"Speak as Pull\" mode when headphones are inserted</string>
+    <string name="automaticSAPTitle">Headset</string>
+    <string name="onMusic">Automatically switches to \"Speak as Pull\" mode when music or game is playing</string>
+    <string name="onMusicTitle">Music</string>
+    <string name="notificationSpeaking">Show a notification when the application is talking</string>
+    <string name="notificationSpeakingTitle">Show notification</string>
+    <string name="language">Force the voice to use a different language, by default voice will use the system language</string>
+    <string name="languageTitle">Force a different language</string>
+    <string name="autorize">Please authorize this app!</string>
+    <string name="autorizeerror">Error on the authorization process</string>
+    <string name="pause">Pause</string>
+    <string name="controls">Controls</string>
+    <string name="newm">New mention</string>
+    <string name="isSpeaking">Speakbird is speaking</string>
+    <string name="isSpeakingC">Speakbird is speaking - click to stop</string>
+    <string name="wSpeaking">Speakbird wants to speak</string>
+    <string name="top">Back to top</string>
+    <string name="errorconnection">Connection not available</string>
+    <string name="account_description">Sync frequency, mode, etc.</string>
+    <string name="dialoginfo">Developed by Lorenzo Braghetto aka monossido\n monossido@lorenzobraghetto.com\n www.lorenzobraghetto.com\n\nGraphics designed by Federico Bressan\nhttp://studio73inc.com/</string>
+    <string name="tap">Tap on the red icon(s) to fix</string>
+    <string name="missing">Something is missing</string>
+    <string name="newaccount">A SpeakBird account has been added to the Android account manager</string>
+
+</resources>

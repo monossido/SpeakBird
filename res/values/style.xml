@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ /*
+ *      This file is part of Metwit <https://github.com/monossido/Metwit>
+ *      
+ *      Metwit is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      Metwit is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *      
+ *      You should have received a copy of the GNU General Public License
+ *      along with Metwit  If not, see <http://www.gnu.org/licenses/>.
+ *      
+ *
+-->
+<resources>
+
+    <style name="Theme" parent="android:Theme"></style>
+
+    <style name="HomeButton">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:textSize">13dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="Theme.Mio" parent="style/Theme.Sherlock">
+        <item name="android:actionBarStyle">@style/Theme.SpeakBird.Actionbar</item>
+        <item name="actionBarStyle">@style/Theme.SpeakBird.Actionbar</item>
+        <!--
+    <item name="android:selectableItemBackground">@drawable/ad_selectable_background</item>
+    <item name="android:popupMenuStyle">@style/MyPopupMenu</item>
+    <item name="android:dropDownListViewStyle">@style/MyDropDownListView</item>
+    <item name="android:actionBarTabStyle">@style/MyActionBarTabStyle</item>
+    <item name="android:actionDropDownStyle">@style/MyDropDownNav</item>
+    <item name="android:listChoiceIndicatorMultiple">@drawable/ad_btn_check_holo_light</item>
+    <item name="android:listChoiceIndicatorSingle">@drawable/ad_btn_radio_holo_light</item>
+        -->
+    </style>
+
+    <style name="Theme.SpeakBird.Actionbar" parent="Widget.Sherlock.ActionBar">
+        <item name="background">#0064a7</item>
+        <item name="android:background">#0064a7</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+
+</resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/preferenceTitle" >
+        <EditTextPreference
+            android:name="@string/interval"
+            android:defaultValue="5"
+            android:inputType="number"
+            android:key="updateInterval"
+            android:summary="@string/minuts"
+            android:title="@string/interval" />
+
+        <ListPreference
+            android:defaultValue="notification"
+            android:entries="@array/listArray"
+            android:entryValues="@array/listValues"
+            android:key="listPref"
+            android:summary="@string/mode"
+            android:title="@string/modeTitle" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="speakNotifing"
+            android:summary="@string/speakNotifing"
+            android:title="@string/speakNotifingTitle" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="automaticSAP"
+            android:summary="@string/automaticSAP"
+            android:title="@string/automaticSAPTitle" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="onMusic"
+            android:summary="@string/onMusic"
+            android:title="@string/onMusicTitle" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="notificationSpeaking"
+            android:summary="@string/notificationSpeaking"
+            android:title="@string/notificationSpeakingTitle" />
+    </PreferenceCategory>
+
+    <ListPreference
+        android:defaultValue="Default"
+        android:entries="@array/languageArray"
+        android:entryValues="@array/listLanguage"
+        android:key="language"
+        android:summary="@string/language"
+        android:title="@string/languageTitle" />
+
+</PreferenceScreen>

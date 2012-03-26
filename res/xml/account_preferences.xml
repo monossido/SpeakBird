@@ -1,0 +1,15 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="General Settings" />
+
+    <PreferenceScreen
+        android:key="account_settings"
+        android:summary="@string/account_description"
+        android:title="Account Settings" >
+        <intent
+            android:action="com.lorenzobraghetto.speakbird.View.Settings.ACCOUNT_SETUP"
+            android:targetClass="com.lorenzobraghetto.speakbird.View.Settings"
+            android:targetPackage="com.lorenzobraghetto.speakbird" />
+    </PreferenceScreen>
+
+</PreferenceScreen>

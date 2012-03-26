@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.lorenzobraghetto.speakbird"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical" >
+
+    <com.lorenzobraghetto.speakbird.View.DashboardLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/actionbarM" >
+
+        <Button
+            android:id="@+id/button1"
+            style="@style/HomeButton"
+            android:background="@drawable/background_item"
+            android:drawableTop="@drawable/ic_tab_mentions_default"
+            android:text="@string/mentions" >
+        </Button>
+
+        <Button
+            android:id="@+id/button2"
+            style="@style/HomeButton"
+            android:background="@drawable/background_item"
+            android:drawableTop="@drawable/ic_menu_preferences"
+            android:text="@string/settings" >
+        </Button>
+
+        <Button style="@style/HomeButton" />
+
+        <Button style="@style/HomeButton" />
+    </com.lorenzobraghetto.speakbird.View.DashboardLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="90dp"
+        android:background="#0064a7"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/mentions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/icon" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/mentions"
+            android:text="@string/lastMention"
+            android:textColor="#000" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/textView1"
+            android:textColor="#000"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</RelativeLayout>
