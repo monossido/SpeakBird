@@ -122,20 +122,19 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 			try {
 				mentions = twitter.getMentions(since);
 			} catch (TwitterException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				stopSelf();
 				return null;
 			}
 			
-	    	boolean esci = false;
+	    	boolean exit = false;
 	    	newTweet=0;
-	        for(; !esci && newTweet<mentions.size(); newTweet++)
+	        for(; !exit && newTweet<mentions.size(); newTweet++)
 	        {
 	        	if(lastTweet.compareTo(mentions.get(newTweet).getId()+"")==0)
-	        		esci=true;
+	        		exit=true;
 	        }
-	    	if(lastTweet.length()==0)//se viene eliminato l'ultimo tweet da twitter (e se è la prima volta che vengono scaricati i tweet?)
+	    	if(lastTweet.length()==0)//if there are some problems or if it's the first time that the service is running
 	    	{
 	    		lastTweet = mentions.get(0).getId()+"";
 	    		editor.putString("lastTweet", mentions.get(0).getId()+"");
@@ -143,9 +142,12 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 	    		newTweet=0;
 	    	}
 
-	    	if(newTweet>0)//C'è almeno un nuovo tweet
+	    	if(newTweet>0)//There is almost one tweet
 			{
+	    		boolean automaticNotification = settings.getBoolean("automaticNotification", false);
+	    		Log.v("SPEAKBIRD","audiom.getRingerMode()="+audiom.getRingerMode());
 				if(settings.getString("listPref", "notification").compareTo("speakASpull")==0 
+						&& (!automaticNotification || (automaticNotification && audiom.getRingerMode() != AudioManager.RINGER_MODE_SILENT && audiom.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE))
 						|| (settings.getBoolean("onMusic", false) && audiom.isMusicActive())
 						|| (settings.getBoolean("automaticSAP", false) && audiom.isWiredHeadsetOn()))//Speak as pull o notifica?
 					mTts = new TextToSpeech(getApplicationContext(), TwitterService.this);
@@ -162,7 +164,14 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 	        		
 	        		Context context = getApplicationContext();
 	        		CharSequence contentTitle = "SpeakBird notification";
-	        		CharSequence contentText = getString(R.string.wSpeaking);
+	        		
+	        		String sMentions;
+	        		if(newTweet>1)
+	        			sMentions=newTweet+" "+getString(R.string.mentions).toLowerCase();
+	        		else
+	        			sMentions=newTweet+" "+getString(R.string.mention);
+	        		
+	        		CharSequence contentText = getString(R.string.wSpeaking)+" - "+sMentions;
 	        		
 	        		Bundle toService = new Bundle();
 	        	    toService.putBoolean("notificationToSpeak", true);
@@ -251,22 +260,25 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 
         		mNotificationManager.notify(HELLO_ID, notification);
         	}
+        	
+        	if(newTweet>1)
+        		mTts.speak(getString(R.string.have)+" "+newTweet+" "+getString(R.string.haveM), TextToSpeech.QUEUE_ADD, null);
 
-            for(int z=newTweet-1; z>=0; z--)//-1 perchè deve partire da 0
+            for(int z=newTweet-1; z>=0; z--)
             {
             	mTts.setOnUtteranceCompletedListener(this);
             	HashMap<String, String> myHashAlarm = new HashMap();
             	if(z==0)
             		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
             	        "end of wakeup message ID");
-	            myText1 = "Menzionato da "+ mentions.get(z).getUser().getScreenName() +" \" "+mentions.get(z).getText();
+	            myText1 = getString(R.string.mentionedBy)+" "+ mentions.get(z).getUser().getScreenName() +" \" "+mentions.get(z).getText();
 
             	mTts.speak(myText1, TextToSpeech.QUEUE_ADD, myHashAlarm);
-            	//mTts.speak(myText2, TextToSpeech.QUEUE_ADD, null);*/
-        		editor.putString("lastTweet", mentions.get(0).getId()+"");
-	    		editor.putString("lastTweetUser", mentions.get(0).getUser().getScreenName());
-        		editor.commit();
             }
+
+        	editor.putString("lastTweet", mentions.get(0).getId()+"");
+    		editor.putString("lastTweetUser", mentions.get(0).getUser().getScreenName());
+    		editor.commit();
             
         }else{
         	Toast.makeText(getApplicationContext(), "There was a problem with yout TTS Locale, maybe it's missing?", Toast.LENGTH_SHORT).show();

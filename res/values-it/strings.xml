@@ -3,6 +3,8 @@
 
     <string name="app_name">SpeakBird</string>
     <string name="mentions">Menzioni</string>
+    <string name="mention">menzione</string>
+    <string name="mentionedBy">menzionato da</string>
     <string name="settings">Impostazioni</string>
     <string name="lastMention">Ultima menzione da:</string>
     <string name="status">Stato</string>
@@ -38,5 +40,9 @@
     <string name="tap">Clicca sull\'icona(e) rossa per risolvere il problema</string>
     <string name="missing">Manca qualcosa</string>
     <string name="newaccount">Un account SpeakBird è stato aggiunto alla gestione account di Android</string>
+    <string name="automaticNotification">Attiva automaticamente la modalità \"Notification\" quando si entra in modalità silenziosa</string>
+    <string name="automaticNotificationTitle">Modalità silenziosa</string>
+    <string name="have">Hai</string>
+    <string name="haveM">nuove menzioni</string>
 
 </resources>

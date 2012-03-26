@@ -50,8 +50,6 @@ public class Settings extends SherlockPreferenceActivity
              
              SharedPreferences prefs = PreferenceManager
                      .getDefaultSharedPreferences(getBaseContext());
-             final Editor prefsE = prefs.edit();
-
              
              ListPreference prefBtn = (ListPreference) findPreference("listPref");
              final CheckBoxPreference musicPrefs = (CheckBoxPreference) findPreference("onMusic");
@@ -64,6 +62,7 @@ public class Settings extends SherlockPreferenceActivity
              
              final ListPreference language = (ListPreference) findPreference("language");
 
+        	 final CheckBoxPreference automaticNotification = (CheckBoxPreference) findPreference("automaticNotification");
              
              prefBtn.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -73,13 +72,14 @@ public class Settings extends SherlockPreferenceActivity
 						speakNotifing.setEnabled(true);
 						automaticSAP.setEnabled(true);
 						musicPrefs.setEnabled(true);
-						prefsE.commit();
+						automaticNotification.setEnabled(false);
 					}
 					else
 					{
 						speakNotifing.setEnabled(false);
 						musicPrefs.setEnabled(false);
 						automaticSAP.setEnabled(false);
+						automaticNotification.setEnabled(true);
 					}
 			        
 					return true;
@@ -105,7 +105,9 @@ public class Settings extends SherlockPreferenceActivity
         	 };
              
         	 EditTextPreference updateInterval = (EditTextPreference) findPreference("updateInterval");
-        	 updateInterval.setOnPreferenceChangeListener(resetSync);  
+        	 updateInterval.setOnPreferenceChangeListener(resetSync); 
+        	 
+        	 
 
 	}
 	 
