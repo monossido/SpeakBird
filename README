@@ -5,6 +5,7 @@ com.lorenzobraghetto.speakbird.Logic 	-> Application logic stuff
 com.lorenzobraghetto.speakbird.View	-> Application View/Activity stuff
 
 I welcome every contribution to this project, via pull request or with suggestion via email (monossido@lorenzobraghetto.com)
+Available on Google Play here https://play.google.com/store/apps/details?id=com.lorenzobraghetto.speakbird, and here the free version https://play.google.com/store/apps/details?id=com.lorenzobraghetto.speakbirdads
 To build SpeakBird you have to use this libraries:
 
 oauth-signpost:
