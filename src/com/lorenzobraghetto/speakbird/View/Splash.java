@@ -141,6 +141,7 @@ public class Splash extends Activity implements OnInitListener {
 						AccountManager am = AccountManager.get(this);
 						boolean accountCreated = am.addAccountExplicitly(account, null, null);
 						ContentResolver.setSyncAutomatically(account, "com.lorenzobraghetto.speakbird.content", true);
+						ContentResolver.setSyncAutomatically(account, "com.lorenzobraghetto.speakbird.contentm", true);
 
 						
 						Bundle extras = ((SpeakBirdApplication)getApplication()).getExtraAccount();

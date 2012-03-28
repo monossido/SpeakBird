@@ -5,7 +5,10 @@
     <string name="mentions">Menzioni</string>
     <string name="mention">menzione</string>
     <string name="mentionedBy">menzionato da</string>
+    <string name="messageBy">Messaggio da</string>
     <string name="settings">Impostazioni</string>
+    <string name="messages">Messaggi</string>
+    <string name="message">Message</string>
     <string name="lastMention">Ultima menzione da:</string>
     <string name="status">Stato</string>
     <string name="dialogCheck">Senza l\'autenticazione a Twitter o le librerie Text To Speech l\'applicazione non si avvierà</string>
@@ -44,5 +47,11 @@
     <string name="automaticNotificationTitle">Modalità silenziosa</string>
     <string name="have">Hai</string>
     <string name="haveM">nuove menzioni</string>
+    <string name="haveMS">Hai</string>
+    <string name="haveMMS">nuovi messaggi</string>
+    <string name="syncing">Sincronizzazione Menzioni</string>
+    <string name="syncingTitle">Menzioni</string>
+    <string name="syncingM">Sincronizzazione Messaggi</string>
+    <string name="syncingMTitle">Messaggi</string>
 
 </resources>

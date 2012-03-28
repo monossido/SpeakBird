@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/LinearLayout1"
-    android:layout_width="wrap_content"
-    android:layout_height="250dp"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
     android:orientation="vertical" >
 
     <ImageView
@@ -24,7 +25,9 @@
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/imageView1"
         android:autoLink="web|email"
-        android:text="@string/dialoginfo" >
+        android:text="@string/dialoginfo"
+        android:textColor="#000"
+        android:textColorLink="#83d183" >
     </TextView>
 
     <TextView

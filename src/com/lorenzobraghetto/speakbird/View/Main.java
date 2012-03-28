@@ -69,13 +69,25 @@ public class Main extends SherlockActivity {
         button1.setOnClickListener(new OnClickListener() {    
 
 		public void onClick(View arg0) {
-			Intent mentions = new Intent(getBaseContext(), Mentions.class);
+			Intent mentions = new Intent(getBaseContext(), Tweet.class);
 			startActivity(mentions);
 		}
         
        });
+        
         Button button2 = (Button)findViewById(R.id.button2);  
         button2.setOnClickListener(new OnClickListener() {    
+
+		public void onClick(View arg0) {
+			Intent messages = new Intent(getBaseContext(), Tweet.class);
+			messages.putExtra("messages", true);
+			startActivity(messages);
+		}
+        
+       });
+        
+        Button button3 = (Button)findViewById(R.id.button3);  
+        button3.setOnClickListener(new OnClickListener() {    
 
 		public void onClick(View arg0) {
 			Intent settings = new Intent(getBaseContext(), Settings.class);
@@ -97,15 +109,8 @@ public class Main extends SherlockActivity {
         // Handle item selection
         switch (item.getItemId()) {
         case R.id.info:
-			 dialog.setContentView(R.layout.dialoginfo);
-			 try {
-				((TextView)dialog.findViewById(R.id.version)).setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-			} catch (NameNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			 dialog.setTitle("Info");
-			 dialog.show();
+			 Intent info = new Intent(getApplicationContext(), About.class);
+			 startActivity(info);
 			 return true;
         default:
             return super.onOptionsItemSelected(item);

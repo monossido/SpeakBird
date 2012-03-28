@@ -35,16 +35,19 @@ import android.preference.PreferenceManager;
 		public void onReceive(Context context, Intent intent) {
 			NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
-			mNotificationManager.cancelAll();
-			SharedPreferences settings = PreferenceManager
-	                .getDefaultSharedPreferences(context);
-			Editor editor = settings.edit();
-    		editor.putString("lastTweet", intent.getExtras().getLong("lastTweet")+"");
-    		editor.putString("lastTweetUser", intent.getExtras().getString("lastTweetUser")+"");
+			if(intent.getExtras().getBoolean("fromMentions")==true)
+			{
+				SharedPreferences settings = PreferenceManager
+		                .getDefaultSharedPreferences(context);
+				Editor editor = settings.edit();
+	    		editor.putString("lastTweet", intent.getExtras().getLong("lastTweet")+"");
+	    		editor.putString("lastTweetUser", intent.getExtras().getString("lastTweetUser")+"");
+	
+	    		editor.commit();
+	    		context.stopService(new Intent(context,TwitterService.class));
+			}else
+				context.stopService(new Intent(context,TwitterServiceM.class));
 
-    		editor.commit();
-    		context.stopService(new Intent(context,TwitterService.class));
-			
 		}
 
 	

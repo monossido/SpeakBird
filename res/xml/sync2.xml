@@ -1,5 +1,4 @@
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
     android:accountType="com.lorenzobraghetto.speakbird.account"
-    android:contentAuthority="com.lorenzobraghetto.speakbird.content"
+    android:contentAuthority="com.lorenzobraghetto.speakbird.contentm"
     android:supportsUploading="false" />
-

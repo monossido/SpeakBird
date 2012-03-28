@@ -28,6 +28,7 @@ import android.accounts.NetworkErrorException;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
  
@@ -104,5 +105,27 @@ private static class AccountAuthenticatorImpl extends AbstractAccountAuthenticat
 	public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) {
 		return null;
 		}
+	
+	@Override
+	public Bundle getAccountRemovalAllowed(
+	        AccountAuthenticatorResponse response, Account account)
+	        throws NetworkErrorException {
+	    Bundle result = super.getAccountRemovalAllowed(response, account);
+
+	    if (result != null && result.containsKey(AccountManager.KEY_BOOLEAN_RESULT)
+	            && !result.containsKey(AccountManager.KEY_INTENT)) {
+	        final boolean removalAllowed = result.getBoolean(AccountManager.KEY_BOOLEAN_RESULT);
+
+	        if (removalAllowed) {
+	    		SharedPreferences authsettings = mContext.getSharedPreferences("Auth", MODE_PRIVATE);
+				SharedPreferences.Editor editor = authsettings.edit();
+				editor.putString("accessTokenToken", "");
+				editor.putString("accessTokenSecret", "");
+				editor.commit();
+	        }
+	    }
+
+	    return result;
+	}
 	}
 }

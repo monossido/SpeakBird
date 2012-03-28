@@ -27,6 +27,7 @@ import android.os.Bundle;
 public class SpeakBirdApplication extends Application{
 	
 	private Bundle extra;
+	private boolean busy;
 
 	@Override
     public void onCreate() {
@@ -41,7 +42,18 @@ public class SpeakBirdApplication extends Application{
 	public Twitter getTwitter() {
 		return twitter;
 	}
+	
+	public void setBusy(boolean b)
+	{
+		busy=b;
+	}
 
+	
+	public boolean isBusy()
+	{
+		return busy;
+	}
+	
 	/**
 	 * @param twitter the twitter to set
 	 */

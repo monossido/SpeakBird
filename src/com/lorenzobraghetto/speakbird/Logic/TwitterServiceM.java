@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import com.lorenzobraghetto.speakbird.R;
 
+import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -50,23 +51,12 @@ import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.util.Log;
 import android.widget.Toast;
 
-public class TwitterService extends Service implements OnInitListener, OnUtteranceCompletedListener
+public class TwitterServiceM extends TwitterService
 {
-	protected Twitter twitter;
-	private ResponseList<Status> mentions;
+	private ResponseList<DirectMessage> messages;
 	private String myText1;
-	protected TextToSpeech mTts;
-	protected String CONSUMER_KEY = "CaLz8BjfUQdFZ19i0Ni5mA";
-	protected String CONSUMER_SECRET = "2Djfy4vFEMeZ4ft7vC1EakzPwrtSHVkmBigJdrZg";
     private int result;
-    protected SharedPreferences settings;
 	private int newTweet;
-	protected String ns = NOTIFICATION_SERVICE;
-	protected NotificationManager mNotificationManager;
-	protected SharedPreferences.Editor editor;
-	protected boolean warns;
-	protected static Context mContext;
-	protected AudioManager audiom;
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
@@ -93,7 +83,7 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 			{
 				((SpeakBirdApplication)getApplication()).setBusy(true);
 				mTts = new TextToSpeech(this, this);
-				mNotificationManager.cancel(2);
+				mNotificationManager.cancel(4);
 			 	return START_STICKY;
 			}
 		}
@@ -102,16 +92,17 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
         boolean autenticated = checkForSavedLogin();  
         audiom = (AudioManager) getSystemService(AUDIO_SERVICE);
                 
-        if(!autenticated )//First start?
+         if(!autenticated )//First start?
         	 return 0;
 
-         new TwitterBackground().execute(intent);
+         new TwitterBackgroundM().execute(intent);
         
 		return START_STICKY;
 		
 	}
 	
-	private class TwitterBackground extends AsyncTask<Intent, Void, Void>
+	
+	private class TwitterBackgroundM extends AsyncTask<Intent, Void, Void>
 	{
 
 		@Override
@@ -120,30 +111,30 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 	        
 			String lastTweet = "";
 			
-			lastTweet = settings.getString("lastTweet", "");
+			lastTweet = settings.getString("lastTweetMessage", "");
 			Paging since =new Paging();
 	        if(lastTweet.length()!=0)
 	        	since = new Paging(Long.parseLong(lastTweet));
 
 			try {
-				mentions = twitter.getMentions(since);
+				messages = twitter.getDirectMessages(since);
 			} catch (TwitterException e) {
 				e.printStackTrace();
 				stopSelf();
 				return null;
 			}
-			
-			boolean exit = false;
+
+	    	boolean exit = false;
 	    	newTweet=0;
-	        for(; !exit && newTweet<mentions.size(); newTweet++)
+	        for(; !exit && newTweet<messages.size(); newTweet++)
 	        {
-	        	if(lastTweet.compareTo(mentions.get(newTweet).getId()+"")==0)
+	        	if(lastTweet.compareTo(messages.get(newTweet).getId()+"")==0)
 	        		exit=true;
 	        }
 	    	if(lastTweet.length()==0)//if there are some problems or if it's the first time that the service is running
 	    	{
-	    		lastTweet = mentions.get(0).getId()+"";
-	    		editor.putString("lastTweet", mentions.get(0).getId()+"");
+	    		lastTweet = messages.get(0).getId()+"";
+	    		editor.putString("lastTweetMessage", messages.get(0).getId()+"");
 	    		editor.commit();
 	    		newTweet=0;
 	    	}
@@ -155,12 +146,12 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 						&& (!automaticNotification || (automaticNotification && audiom.getRingerMode() != AudioManager.RINGER_MODE_SILENT && audiom.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE))
 						|| (settings.getBoolean("onMusic", false) && audiom.isMusicActive())
 						|| (settings.getBoolean("automaticSAP", false) && audiom.isWiredHeadsetOn()))//Speak as pull o notifica?
-					mTts = new TextToSpeech(getApplicationContext(), TwitterService.this);
+					mTts = new TextToSpeech(getApplicationContext(), TwitterServiceM.this);
 				else
 				{
 					warns = settings.getBoolean("speakNotifing", false);
 					if(warns)
-						mTts = new TextToSpeech(getApplicationContext(), TwitterService.this);
+						mTts = new TextToSpeech(getApplicationContext(), TwitterServiceM.this);
 	        		int icon = R.drawable.icon;
 	        		CharSequence tickerText = getString(R.string.wSpeaking);
 	        		long when = System.currentTimeMillis();
@@ -170,30 +161,30 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 	        		Context context = getApplicationContext();
 	        		CharSequence contentTitle = "SpeakBird notification";
 	        		
-	        		String sMentions;
+	        		String sMessage;
 	        		if(newTweet>1)
-	        			sMentions=newTweet+" "+getString(R.string.mentions).toLowerCase();
+	        			sMessage=newTweet+" "+getString(R.string.messages).toLowerCase();
 	        		else
-	        			sMentions=newTweet+" "+getString(R.string.mention);
+	        			sMessage=newTweet+" "+getString(R.string.message);
 	        		
-	        		CharSequence contentText = getString(R.string.wSpeaking)+" - "+sMentions;
+	        		CharSequence contentText = getString(R.string.wSpeaking)+" - "+sMessage;
 	        		
 	        		Bundle toService = new Bundle();
 	        	    toService.putBoolean("notificationToSpeak", true);
 
-	        		Intent notificationSpeak = new Intent(getApplicationContext(), TwitterService.class);
+	        		Intent notificationSpeak = new Intent(getApplicationContext(), TwitterServiceM.class);
 	        		notificationSpeak.putExtras(toService);
 	        		
 	        		PendingIntent contentIntent = PendingIntent.getService(context, 1234567, notificationSpeak, PendingIntent.FLAG_CANCEL_CURRENT);
 
 	        		notificationspeak.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 	        		
-	        		final int HELLO_ID = 2;
+	        		final int HELLO_ID = 4;
 	        		
 	        		Intent deleteNotification = new Intent();
 	        		deleteNotification.setClass(getApplicationContext(), DeleteReceiver.class);
-	        		deleteNotification.putExtra("lastTweet", mentions.get(0).getId());
-	        		deleteNotification.putExtra("lastTweetUser", mentions.get(0).getUser().getScreenName());
+	        		deleteNotification.putExtra("lastTweetMessage", messages.get(0).getId());
+	        		deleteNotification.putExtra("lastTweetMessageUser", messages.get(0).getSender().getScreenName());
 
 	        		
 	        		notificationspeak.deleteIntent = PendingIntent.getBroadcast(context, 123456, deleteNotification, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -208,19 +199,7 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 		
 	}
 	
-	public static boolean isNetworkAvailable() {
-	    ConnectivityManager connectivityManager 
-	          = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-	    return activeNetworkInfo != null;
-	}
-
 	@Override
-	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	public void onInit(int arg0) {
 		Locale locale = getLocale();
 
@@ -250,16 +229,14 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
         		
         		Intent deleteNotification = new Intent();
         		deleteNotification.setClass(getApplicationContext(), DeleteReceiver.class);
-        		deleteNotification.putExtra("fromMentions", true);
-        		deleteNotification.putExtra("lastTweet", mentions.get(0).getId());
-        		deleteNotification.putExtra("lastTweetUser", mentions.get(0).getUser().getScreenName());
-        		
+        		deleteNotification.putExtra("fromMentions", false);
+
         		PendingIntent contentIntent = PendingIntent.getBroadcast(context, 123456,
         				deleteNotification, PendingIntent.FLAG_CANCEL_CURRENT);
 
         		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
         		
-        		final int HELLO_ID = 1;
+        		final int HELLO_ID = 3;
         		
         		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 
@@ -268,7 +245,7 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
         	}
         	
         	if(newTweet>1)
-        		mTts.speak(getString(R.string.have)+" "+newTweet+" "+getString(R.string.haveM), TextToSpeech.QUEUE_ADD, null);
+        		mTts.speak(getString(R.string.haveMS)+" "+newTweet+" "+getString(R.string.haveMMS), TextToSpeech.QUEUE_ADD, null);
 
             for(int z=newTweet-1; z>=0; z--)
             {
@@ -277,13 +254,13 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
             	if(z==0)
             		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
             	        "end of wakeup message ID");
-	            myText1 = getString(R.string.mentionedBy)+" "+ mentions.get(z).getUser().getScreenName() +" \" "+mentions.get(z).getText();
+	            myText1 = getString(R.string.messageBy)+" "+ messages.get(z).getSender().getScreenName() +" \" "+messages.get(z).getText();
 
             	mTts.speak(myText1, TextToSpeech.QUEUE_ADD, myHashAlarm);
             }
             
-            editor.putString("lastTweet", mentions.get(0).getId()+"");
-    		editor.putString("lastTweetUser", mentions.get(0).getUser().getScreenName());
+            editor.putString("lastTweetMessage", messages.get(0).getId()+"");
+    		editor.putString("lastTweetMessageUser", messages.get(0).getSender().getScreenName());
     		editor.commit();
             
         }else{
@@ -292,14 +269,9 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 		
 	}
 	
-	public void onUtteranceCompleted(String uttId)	{
-		stopSelf();
-		
-	}
-	
 	public void onDestroy()
 	{
-		mNotificationManager.cancel(1);
+		mNotificationManager.cancel(3);
 		if(mTts!=null)
 		{
 			mTts.stop();
@@ -309,55 +281,5 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 		((SpeakBirdApplication)getApplication()).setBusy(false);
 
 	}
-	
-	protected boolean checkForSavedLogin() {  
-   	 // Get Access Token and persist it  
-   	 AccessToken a = getAccessToken();  
-   	 if (a==null) 
-   		 {
-   		 	return false; //if there are no credentials stored then return to usual activity  
-   		 }
-   	  
-   	 // initialize Twitter4J  
-   	 twitter = new TwitterFactory().getInstance();  
-   	 twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);  
-   	 twitter.setOAuthAccessToken(a);  
-   	((SpeakBirdApplication)getApplication()).setTwitter(twitter);  
-   	   
-   	 //startFirstActivity();  
-   	 //finish();  
-   	 return true;
-   	}
-    
-    private AccessToken getAccessToken() {
-		SharedPreferences settings = getSharedPreferences("Auth", MODE_PRIVATE);
-		String token = settings.getString("accessTokenToken", "");
-		String tokenSecret = settings.getString("accessTokenSecret", "");
-		if (token!=null && tokenSecret!=null && !"".equals(tokenSecret) && !"".equals(token)){
-			return new AccessToken(token, tokenSecret);
-		}
-		return null;
-	}
-
-    protected Locale getLocale()
-    {
-    	String locale = settings.getString("language", "");
-    	if(locale.length()==0)
-    		return Locale.getDefault();
-    	if(locale.compareTo("UK")==0)
-    		return Locale.UK;
-    	else if(locale.compareTo("US")==0)
-    		return Locale.US;
-    	else if(locale.compareTo("FRENCH")==0)
-    		return Locale.FRENCH;
-    	else if(locale.compareTo("ITALIAN")==0)
-    		return Locale.ITALIAN;
-    	else if(locale.compareTo("SPANISH")==0)
-    		return new Locale("es");
-    	else if(locale.compareTo("GERMAN")==0)
-    		return Locale.GERMAN;
-		return Locale.getDefault();
-
-    }
     
 }

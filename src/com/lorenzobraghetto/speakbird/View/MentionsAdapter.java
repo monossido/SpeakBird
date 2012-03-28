@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.lorenzobraghetto.speakbird.R;
 
+import twitter4j.DirectMessage;
 import twitter4j.Status;
 
 import android.content.Context;
@@ -42,8 +43,9 @@ public class MentionsAdapter extends BaseAdapter{
     private LayoutInflater inflater;
     private long first;
     private int itemColored;
+    private String type;
 
-    public MentionsAdapter(Context context,ArrayList<Object> itemList, long first, int itemColored) {
+    public MentionsAdapter(Context context,ArrayList<Object> itemList, long first, int itemColored, String type) {
         super();
         this.context=context;
         this.itemList = itemList;
@@ -51,6 +53,7 @@ public class MentionsAdapter extends BaseAdapter{
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.first = first;
         this.itemColored = itemColored;
+        this.type = type;
 }
 
     public void add(Object item)
@@ -100,10 +103,29 @@ public class MentionsAdapter extends BaseAdapter{
         }
         else
             holder=(ViewHolder)convertView.getTag();
-
-        Status bean = (Status) itemList.get(position);
         
-        long d = bean.getCreatedAt().getTime();
+        long d;
+        String urlimg;
+        String nick;
+        String text;
+                
+        if(type.compareTo("mentions")==0)
+        {
+        	Status bean = (Status) itemList.get(position);
+            d = bean.getCreatedAt().getTime();
+            urlimg = bean.getUser().getProfileImageURL()+"";
+            nick = bean.getUser().getScreenName();
+            text = bean.getText();
+        }
+        else
+        {
+        	DirectMessage bean = (DirectMessage) itemList.get(position);
+            d = bean.getCreatedAt().getTime();
+            urlimg = bean.getSender().getProfileImageURL()+"";
+            nick = bean.getSender().getScreenName();
+            text = bean.getText();
+        }
+
         long now = System.currentTimeMillis();
         
         long elapsed = now-d;
@@ -111,10 +133,10 @@ public class MentionsAdapter extends BaseAdapter{
         int hours   = (int) ((elapsed / (1000*60*60)) % 24);
         int days = (int) ((elapsed / (1000*60*60*24)));
         
-        UrlImageViewHelper.setUrlDrawable(holder.imgViewLogo, bean.getUser().getProfileImageURL()+"");
+        UrlImageViewHelper.setUrlDrawable(holder.imgViewLogo, urlimg);
 
-        holder.txtViewNick.setText("@"+bean.getUser().getScreenName());
-        holder.txtViewText.setText(bean.getText());
+        holder.txtViewNick.setText("@"+nick);
+        holder.txtViewText.setText(text);
         if(days>0 && hours>0 && minutes>0)
         	holder.txtViewTime.setText(days+"d "+hours+"h "+minutes+"m ");
         else if(hours>0 && minutes>0)

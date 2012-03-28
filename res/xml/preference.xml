@@ -2,6 +2,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/preferenceTitle" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="syncing"
+            android:summary="@string/syncing"
+            android:title="@string/syncingTitle" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="syncingM"
+            android:summary="@string/syncingM"
+            android:title="@string/syncingMTitle" />
+
         <EditTextPreference
             android:name="@string/interval"
             android:defaultValue="5"
@@ -38,6 +49,11 @@
             android:key="notificationSpeaking"
             android:summary="@string/notificationSpeaking"
             android:title="@string/notificationSpeakingTitle" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="automaticNotification"
+            android:summary="@string/automaticNotification"
+            android:title="@string/automaticNotificationTitle" />
     </PreferenceCategory>
 
     <ListPreference

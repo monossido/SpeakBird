@@ -27,7 +27,6 @@ import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -50,6 +49,36 @@ public class Settings extends SherlockPreferenceActivity
              
              SharedPreferences prefs = PreferenceManager
                      .getDefaultSharedPreferences(getBaseContext());
+             
+             final Account account = new Account("Speakbird Twitter Account", "com.lorenzobraghetto.speakbird.account");
+             
+             final CheckBoxPreference syncing = (CheckBoxPreference) findPreference("syncing");
+             boolean isSyncing = ContentResolver.getSyncAutomatically(account, "com.lorenzobraghetto.speakbird.content");
+             syncing.setChecked(isSyncing);
+             syncing.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+ 				public boolean onPreferenceChange(Preference arg0, Object arg1) {
+ 					if(arg1.toString().compareTo("true")==0)
+ 						ContentResolver.setSyncAutomatically(account, "com.lorenzobraghetto.speakbird.content", true);
+ 					else
+ 						ContentResolver.setSyncAutomatically(account, "com.lorenzobraghetto.speakbird.content", false);
+					return true;
+ 				}            	 
+             });
+             
+             final CheckBoxPreference syncingM = (CheckBoxPreference) findPreference("syncingM");
+             boolean isSyncingM = ContentResolver.getSyncAutomatically(account, "com.lorenzobraghetto.speakbird.contentm");
+             syncingM.setChecked(isSyncingM);
+             syncingM.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+ 				public boolean onPreferenceChange(Preference arg0, Object arg1) {
+ 					if(arg1.toString().compareTo("true")==0)
+ 						ContentResolver.setSyncAutomatically(account, "com.lorenzobraghetto.speakbird.contentm", true);
+ 					else
+ 						ContentResolver.setSyncAutomatically(account, "com.lorenzobraghetto.speakbird.contentm", false);
+					return true;
+ 				}            	 
+             });
              
              ListPreference prefBtn = (ListPreference) findPreference("listPref");
              final CheckBoxPreference musicPrefs = (CheckBoxPreference) findPreference("onMusic");
@@ -96,7 +125,6 @@ public class Settings extends SherlockPreferenceActivity
         	 OnPreferenceChangeListener resetSync = new OnPreferenceChangeListener() {
 
 				public boolean onPreferenceChange(Preference arg0, Object arg1) {
-					Account account = new Account("Speakbird Twitter Account", "com.lorenzobraghetto.speakbird.account");
 					ContentResolver.addPeriodicSync(account, "com.lorenzobraghetto.speakbird.content", new Bundle(), Long.parseLong(arg1.toString())*60);
 					
 					return true;
@@ -105,7 +133,7 @@ public class Settings extends SherlockPreferenceActivity
         	 };
              
         	 EditTextPreference updateInterval = (EditTextPreference) findPreference("updateInterval");
-        	 updateInterval.setOnPreferenceChangeListener(resetSync); 
+        	 updateInterval.setOnPreferenceChangeListener(resetSync);
         	 
         	 
 

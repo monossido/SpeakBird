@@ -22,8 +22,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lorenzobraghetto.speakbird"
     android:installLocation="internalOnly"
-    android:versionCode="3"
-    android:versionName="0.1.1" >
+    android:versionCode="5"
+    android:versionName="0.3" >
 
     <uses-sdk
         targetSdkVersion="15"
@@ -35,6 +35,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+	<uses-permission android:name="android.permission.READ_SYNC_STATS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
     <application
@@ -44,6 +45,11 @@
         android:theme="@style/Theme.Mio" >
         <activity
             android:name=".View.Main"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Mio" >
+        </activity>
+        <activity
+			android:name=".View.Main"
             android:label="@string/app_name"
             android:theme="@style/Theme.Mio" >
         </activity>
@@ -77,6 +83,7 @@
         </activity>
 
         <service android:name=".Logic.TwitterService" />
+        <service android:name=".Logic.TwitterServiceM" />
 
         <activity
             android:name=".View.Settings"
@@ -84,12 +91,27 @@
         </activity>
         <activity
             android:name=".View.Mentions"
-            android:configChanges="orientation|keyboardHidden"
             android:label="@string/mentions" >
         </activity>
         <activity
             android:name=".Sync.CreateAccount"
             android:label="Creaate Account" >
+        </activity>
+        <activity
+            android:name=".View.About"
+            android:label="About" >
+        </activity>
+        <activity
+            android:name=".View.About"
+            android:label="About" >
+        </activity>
+        <activity
+            android:name=".View.Messages"
+            android:label="@string/messages" >
+        </activity>
+        <activity
+            android:name=".View.Tweet"
+            android:configChanges="orientation|keyboardHidden" >
         </activity>
 
         <receiver android:name=".Logic.DeleteReceiver" />
@@ -117,11 +139,27 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/sync" />
         </service>
+        <service
+            android:name=".Sync.SpeakServiceM"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync2" />
+        </service>
 
         <provider
             android:name=".Sync.NullProvider"
             android:authorities="com.lorenzobraghetto.speakbird.content"
-            android:label="Speakbird Data"
+            android:label="Mentions"
+            android:syncable="true" />
+        <provider
+            android:name=".Sync.NullProviderM"
+            android:authorities="com.lorenzobraghetto.speakbird.contentm"
+            android:label="Messages"
             android:syncable="true" />
     </application>
 
