@@ -112,6 +112,7 @@ public class TwitterServiceM extends TwitterService
 			String lastTweet = "";
 			
 			lastTweet = settings.getString("lastTweetMessage", "");
+
 			Paging since =new Paging();
 	        if(lastTweet.length()!=0)
 	        	since = new Paging(Long.parseLong(lastTweet));
@@ -185,6 +186,7 @@ public class TwitterServiceM extends TwitterService
 	        		deleteNotification.setClass(getApplicationContext(), DeleteReceiver.class);
 	        		deleteNotification.putExtra("lastTweetMessage", messages.get(0).getId());
 	        		deleteNotification.putExtra("lastTweetMessageUser", messages.get(0).getSender().getScreenName());
+	        		deleteNotification.putExtra("fromMentions", false);
 
 	        		
 	        		notificationspeak.deleteIntent = PendingIntent.getBroadcast(context, 123456, deleteNotification, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -229,6 +231,8 @@ public class TwitterServiceM extends TwitterService
         		
         		Intent deleteNotification = new Intent();
         		deleteNotification.setClass(getApplicationContext(), DeleteReceiver.class);
+        		deleteNotification.putExtra("lastTweetMessage", messages.get(0).getId());
+        		deleteNotification.putExtra("lastTweetMessageUser", messages.get(0).getSender().getScreenName());
         		deleteNotification.putExtra("fromMentions", false);
 
         		PendingIntent contentIntent = PendingIntent.getBroadcast(context, 123456,

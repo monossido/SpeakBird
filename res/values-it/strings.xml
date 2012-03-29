@@ -53,7 +53,7 @@
     <string name="haveMMS">nuovi messaggi</string>
     <string name="syncing">Sincronizza Menzioni</string>
     <string name="syncingTitle">Menzioni</string>
-    <string name="syncingM">Syncronizza Messaggi</string>
+    <string name="syncingM">Sincronizza Messaggi</string>
     <string name="syncingMTitle">Messaggi</string>
 
 </resources>

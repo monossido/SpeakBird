@@ -117,10 +117,10 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 		@Override
 		protected Void doInBackground(Intent... intents) {
 
-	        
 			String lastTweet = "";
 			
 			lastTweet = settings.getString("lastTweet", "");
+
 			Paging since =new Paging();
 	        if(lastTweet.length()!=0)
 	        	since = new Paging(Long.parseLong(lastTweet));
@@ -194,7 +194,7 @@ public class TwitterService extends Service implements OnInitListener, OnUtteran
 	        		deleteNotification.setClass(getApplicationContext(), DeleteReceiver.class);
 	        		deleteNotification.putExtra("lastTweet", mentions.get(0).getId());
 	        		deleteNotification.putExtra("lastTweetUser", mentions.get(0).getUser().getScreenName());
-
+	        		deleteNotification.putExtra("fromMentions", true);
 	        		
 	        		notificationspeak.deleteIntent = PendingIntent.getBroadcast(context, 123456, deleteNotification, PendingIntent.FLAG_CANCEL_CURRENT);
 
