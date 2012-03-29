@@ -14,7 +14,9 @@
     <string name="dialogCheck">Senza l\'autenticazione a Twitter o le librerie Text To Speech l\'applicazione non si avvierà</string>
     <string name="controllerAll">Tutte le menzioni a partire da quella cliccata verranno riprodotte</string>
     <string name="controller">Solo la menzione cliccata verrà riprodotta</string>
-    <string name="preferenceTitle">Impostazioni di SpeakBird</string>
+    <string name="preferenceSyncTitle">Sincronizazione</string>
+    <string name="preferencebehavior">Comportamento</string>
+    <string name="preferencelanguage">Lingua</string>
     <string name="interval">Intervallo di aggiornamento</string>
     <string name="minuts">In minuti</string>
     <string name="mode">Parla immediatamente all\'arrivo di un tweet oppure mostra una notifica</string>
@@ -49,9 +51,9 @@
     <string name="haveM">nuove menzioni</string>
     <string name="haveMS">Hai</string>
     <string name="haveMMS">nuovi messaggi</string>
-    <string name="syncing">Sincronizzazione Menzioni</string>
+    <string name="syncing">Sincronizza Menzioni</string>
     <string name="syncingTitle">Menzioni</string>
-    <string name="syncingM">Sincronizzazione Messaggi</string>
+    <string name="syncingM">Syncronizza Messaggi</string>
     <string name="syncingMTitle">Messaggi</string>
 
 </resources>

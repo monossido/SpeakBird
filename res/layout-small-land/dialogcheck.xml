@@ -18,50 +18,55 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/twitter"
+    <RelativeLayout
+        android:id="@+id/LinearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="110dp"
-        android:layout_marginTop="50dp"
-        android:text="Twitter"
-        android:textColor="#fff" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp" >
 
-    <TextView
-        android:id="@+id/tts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="50dp"
-        android:layout_toRightOf="@+id/twitter"
-        android:text="Text To Speech"
-        android:textColor="#fff" />
+        <TextView
+            android:id="@+id/twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Twitter"
+            android:textColor="#fff" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/twitter"
-        android:layout_marginLeft="110dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/redtweet" />
+        <TextView
+            android:id="@+id/tts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_toRightOf="@+id/twitter"
+            android:text="Text To Speech"
+            android:textColor="#fff" />
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/twitter"
-        android:layout_marginLeft="65dp"
-        android:layout_marginTop="18dp"
-        android:layout_toRightOf="@+id/imageView3"
-        android:src="@drawable/redtts" />
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/twitter"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/redtweet" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/twitter"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="18dp"
+            android:layout_toRightOf="@+id/imageView3"
+            android:src="@drawable/redtts" />
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progressBar1"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView4"
+        android:layout_below="@+id/LinearLayout2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:visibility="gone" >
@@ -71,7 +76,7 @@
         android:id="@+id/tap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView4"
+        android:layout_below="@+id/LinearLayout2"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"

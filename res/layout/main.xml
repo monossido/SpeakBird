@@ -23,7 +23,7 @@
             android:id="@+id/button2"
             style="@style/HomeButton"
             android:background="@drawable/background_item"
-            android:drawableTop="@drawable/messages"
+			android:drawableTop="@drawable/messages"
             android:text="@string/messages" >
         </Button>
 

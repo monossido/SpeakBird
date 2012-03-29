@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/preferenceTitle" >
+    <PreferenceCategory android:title="@string/preferenceSyncTitle" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="syncing"
@@ -12,7 +12,8 @@
             android:key="syncingM"
             android:summary="@string/syncingM"
             android:title="@string/syncingMTitle" />
-
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferencebehavior" >
         <EditTextPreference
             android:name="@string/interval"
             android:defaultValue="5"
@@ -55,13 +56,14 @@
             android:summary="@string/automaticNotification"
             android:title="@string/automaticNotificationTitle" />
     </PreferenceCategory>
-
-    <ListPreference
-        android:defaultValue="Default"
-        android:entries="@array/languageArray"
-        android:entryValues="@array/listLanguage"
-        android:key="language"
-        android:summary="@string/language"
-        android:title="@string/languageTitle" />
+    <PreferenceCategory android:title="@string/preferencelanguage" >
+        <ListPreference
+            android:defaultValue="Default"
+            android:entries="@array/languageArray"
+            android:entryValues="@array/listLanguage"
+            android:key="language"
+            android:summary="@string/language"
+            android:title="@string/languageTitle" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

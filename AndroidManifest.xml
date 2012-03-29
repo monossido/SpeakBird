@@ -151,7 +151,7 @@
                 android:resource="@xml/sync2" />
         </service>
 
-        <provider
+		<provider
             android:name=".Sync.NullProvider"
             android:authorities="com.lorenzobraghetto.speakbird.content"
             android:label="Mentions"
