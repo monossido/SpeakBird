@@ -320,11 +320,19 @@ public class Messages extends Mentions
 			}
 			if(messages==null)
 			{
-				Toast.makeText(mContext, getString(R.string.errorconnection), Toast.LENGTH_SHORT).show();
+				getSherlockActivity().runOnUiThread(new Runnable() {
+	                public void run() {
+	                	Toast.makeText(mContext, getString(R.string.errorconnection), Toast.LENGTH_SHORT).show();
+	                }
+				});
 				return false;
 			}else if(messages.size()==0)
 			{
-				Toast.makeText(mContext, getString(R.string.errormessages), Toast.LENGTH_SHORT).show();
+				getSherlockActivity().runOnUiThread(new Runnable() {
+	                public void run() {
+	                	Toast.makeText(mContext, getString(R.string.errormessages), Toast.LENGTH_SHORT).show();
+	                }
+				});
 				getSherlockActivity().finish();
 				return false;
 			}
@@ -381,7 +389,7 @@ public class Messages extends Mentions
 	            float logicalDensity = metrics.density;
 	            
 	        	listViewM.setDividerHeight((int) (1 * logicalDensity + 0.5));
-			}else
+			}else if(messages.size()!=0)
 			{
 				if(dialogPM!=null)
 					dialogPM.cancel();

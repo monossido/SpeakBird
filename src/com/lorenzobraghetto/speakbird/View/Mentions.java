@@ -96,7 +96,6 @@ public class Mentions extends SherlockFragment implements OnInitListener, OnUtte
 	public void onCreate (Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		Log.v("SPEAKBIRD","onCreate");
 		mContext = getSherlockActivity();
 
 
@@ -353,11 +352,20 @@ public class Mentions extends SherlockFragment implements OnInitListener, OnUtte
 			}
 			if(mentions==null)
 			{
-				Toast.makeText(mContext, getString(R.string.errorconnection), Toast.LENGTH_SHORT).show();
+				getSherlockActivity().runOnUiThread(new Runnable() {
+	                public void run() {
+	                	Toast.makeText(mContext, getString(R.string.errorconnection), Toast.LENGTH_SHORT).show();
+	                }
+				});
 				return false;
 			}else if(mentions.size()==0)
 			{
-				Toast.makeText(mContext, getString(R.string.errormentions), Toast.LENGTH_SHORT).show();
+				getSherlockActivity().runOnUiThread(new Runnable() {
+					
+	                public void run() {
+	                	Toast.makeText(mContext, getString(R.string.errormentions), Toast.LENGTH_SHORT).show();
+	                }
+				});
 				getSherlockActivity().finish();
 				return false;
 			}
@@ -414,7 +422,7 @@ public class Mentions extends SherlockFragment implements OnInitListener, OnUtte
 	            float logicalDensity = metrics.density;
 	            
 	        	listView.setDividerHeight((int) (1 * logicalDensity + 0.5f));
-			}else
+			}else if(mentions.size()!=0)
 			{
 				if(dialogP!=null)
 					dialogP.cancel();
