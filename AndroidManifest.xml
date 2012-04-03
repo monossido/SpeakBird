@@ -22,8 +22,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lorenzobraghetto.speakbird"
     android:installLocation="internalOnly"
-    android:versionCode="5"
-    android:versionName="0.3" >
+    android:versionCode="8"
+    android:versionName="0.3.3" >
 
     <uses-sdk
         targetSdkVersion="15"
@@ -35,7 +35,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-	<uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
     <application
@@ -49,7 +49,7 @@
             android:theme="@style/Theme.Mio" >
         </activity>
         <activity
-			android:name=".View.Main"
+            android:name=".View.Main"
             android:label="@string/app_name"
             android:theme="@style/Theme.Mio" >
         </activity>
@@ -151,7 +151,7 @@
                 android:resource="@xml/sync2" />
         </service>
 
-		<provider
+        <provider
             android:name=".Sync.NullProvider"
             android:authorities="com.lorenzobraghetto.speakbird.content"
             android:label="Mentions"

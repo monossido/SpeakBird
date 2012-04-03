@@ -55,5 +55,7 @@
     <string name="syncingTitle">Menzioni</string>
     <string name="syncingM">Sincronizza Messaggi</string>
     <string name="syncingMTitle">Messaggi</string>
+    <string name="errormentions">Hai 0 menzioni</string>
+    <string name="errormessages">Hai 0 messaggi</string>
 
 </resources>

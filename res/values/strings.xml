@@ -7,7 +7,7 @@
     <string name="mentionedBy">mentioned by</string>
     <string name="messageBy">Message by</string>
     <string name="settings">Settings</string>
-	<string name="messages">Messages</string>
+    <string name="messages">Messages</string>
     <string name="message">Message</string>
     <string name="lastMention">Last mention by:</string>
     <string name="status">Status</string>
@@ -56,6 +56,8 @@
     <string name="syncingTitle">Mentions</string>
     <string name="syncingM">Messages Sync</string>
     <string name="syncingMTitle">Messages</string>
+    <string name="errormentions">You have 0 mentions</string>
+    <string name="errormessages">You have 0 messages</string>
     <string name="changelog"><b>0.3</b>\n\t-Direct Messages support!\n\t-Disable/Enable Sync for Mentions and/or Messages directly from Settings\n\tBug fix with Android Account\n\n<b>0.2</b>\n\t-(huge) bug fix\n\t
 -Number of mention(s) in notification\n\t
 -Number of mentions before start speaking\n\t

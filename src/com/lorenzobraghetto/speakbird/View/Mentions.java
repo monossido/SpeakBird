@@ -355,7 +355,13 @@ public class Mentions extends SherlockFragment implements OnInitListener, OnUtte
 			{
 				Toast.makeText(mContext, getString(R.string.errorconnection), Toast.LENGTH_SHORT).show();
 				return false;
+			}else if(mentions.size()==0)
+			{
+				Toast.makeText(mContext, getString(R.string.errormentions), Toast.LENGTH_SHORT).show();
+				getSherlockActivity().finish();
+				return false;
 			}
+			
 	        ArrayList<Object> data=new ArrayList<Object>();
 	        
 	        
