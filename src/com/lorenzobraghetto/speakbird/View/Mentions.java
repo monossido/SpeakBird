@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-
+import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -30,7 +30,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -56,8 +55,8 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.RelativeLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -69,11 +68,11 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lorenzobraghetto.speakbird.R;
 import com.lorenzobraghetto.speakbird.Logic.SpeakBirdApplication;
 
-
-public class Mentions extends SherlockFragment implements OnInitListener, OnUtteranceCompletedListener
-{
+public class Mentions extends SherlockFragment implements OnInitListener,
+		OnUtteranceCompletedListener {
 	protected Twitter twitter;
 	protected ResponseList<Status> mentions;
+	private ResponseList<DirectMessage> messages;
 	protected String CONSUMER_KEY = "CaLz8BjfUQdFZ19i0Ni5mA";
 	protected String CONSUMER_SECRET = "2Djfy4vFEMeZ4ft7vC1EakzPwrtSHVkmBigJdrZg";
 	protected MentionsAdapter adapter;
@@ -91,185 +90,192 @@ public class Mentions extends SherlockFragment implements OnInitListener, OnUtte
 	private boolean nottop;
 	protected View v;
 	private boolean started;
-	
+	private int tag;
+
+	public void updateContentAndRecycleBitmap(int category, int position) {
+		tag = position;
+		if (isNetworkAvailable()) {
+			new mentionsProgress().execute();
+		} else
+			Toast.makeText(mContext, "Connection not avaible",
+					Toast.LENGTH_SHORT).show();
+		Log.v("SPEAKBIRD", "tag=" + position);
+	}
+
 	@Override
-	public void onCreate (Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mContext = getSherlockActivity();
 
-
-		mNotificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+		mNotificationManager = (NotificationManager) mContext
+				.getSystemService(mContext.NOTIFICATION_SERVICE);
 
 		started = false;
-		
+
 		nottop = false;
-				
+
 		controls = 0;
-		speaking=false; 
-		
-		settings = PreferenceManager
-		        .getDefaultSharedPreferences(mContext);
-				
+		speaking = false;
+
+		settings = PreferenceManager.getDefaultSharedPreferences(mContext);
+
 		checkForSavedLogin();
-		
+
 		getAccessToken();
-		
+
 		numeroTweet = 20;
-		if(isNetworkAvailable())
-			new mentionsProgress().execute();
-		else
-			Toast.makeText(mContext, "Connection not avaible", Toast.LENGTH_SHORT).show();
+
+		String tag = getTag();
+		if (tag != null)
+			updateContentAndRecycleBitmap(0, Integer.parseInt(tag));
 	}
 
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.mentions, container, false);	
-        
-        setHasOptionsMenu(true);
-        
-        list = (PullToRefreshListView) v.findViewById(R.id.mentionsListView);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		v = inflater.inflate(R.layout.mentions, container, false);
+
+		setHasOptionsMenu(true);
+
+		list = (PullToRefreshListView) v.findViewById(R.id.mentionsListView);
 		list.setOnRefreshListener(new OnRefreshListener() {
-		    public void onRefresh() {
-		    	Log.v("SPEAKBIRD","onRefresh");
-		        // Do work to refresh the list here.
-	        	new mentionsUpdate(false).execute();
-		    }
+			public void onRefresh() {
+				Log.v("SPEAKBIRD", "onRefresh");
+				// Do work to refresh the list here.
+				new mentionsUpdate(false).execute();
+			}
 		});
-		
+
 		listView = list.getRefreshableView();
-		
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(onClickMention);		
-        list.setOnScrollListener(EndlessScrollListener);
-        if(!started)
-        	listView.setDividerHeight(0);
-		return v;	
-    }
-	
-	
-	protected void initializeActivity(Bundle savedInstanceState)
-	{
+
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(onClickMention);
+		list.setOnScrollListener(EndlessScrollListener);
+		if (!started)
+			listView.setDividerHeight(0);
+		return v;
+	}
+
+	protected void initializeActivity(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
-	 
 	@Override
-	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.xml.menu2, menu);
 		MenuItem pausa = menu.getItem(2);
 		pausa.setVisible(speaking);
 		MenuItem top = menu.getItem(1);
 		top.setVisible(nottop);
 		MenuItem controlsM = menu.getItem(0);
-		if(controls==1)
+		if (controls == 1)
 			controlsM.setIcon(R.drawable.controlli);
 		else
 			controlsM.setIcon(R.drawable.controlliuno);
 	}
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-        case R.id.controlli:
-			switch(controls) {
-	            case 0:  
-	            	item.setIcon(R.drawable.controlli);
-	            	controls=1;
-	    			Toast.makeText(mContext, R.string.controllerAll, Toast.LENGTH_SHORT).show();
 
-	            	break;
-	            case 1:
-	            	item.setIcon(R.drawable.controlliuno);
-	            	controls=0;
-	    			Toast.makeText(mContext, R.string.controller, Toast.LENGTH_SHORT).show();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.controlli:
+			switch (controls) {
+			case 0:
+				item.setIcon(R.drawable.controlli);
+				controls = 1;
+				Toast.makeText(mContext, R.string.controllerAll,
+						Toast.LENGTH_SHORT).show();
+
+				break;
+			case 1:
+				item.setIcon(R.drawable.controlliuno);
+				controls = 0;
+				Toast.makeText(mContext, R.string.controller,
+						Toast.LENGTH_SHORT).show();
 			}
-        	return true;
-        case R.id.pause:
-        	speaking=false;
-        	getSherlockActivity().invalidateOptionsMenu();
-        	mTts.stop();
+			return true;
+		case R.id.pause:
+			speaking = false;
+			getSherlockActivity().invalidateOptionsMenu();
+			mTts.stop();
 			mTts.shutdown();
-    		mNotificationManager.cancel(1);
+			mNotificationManager.cancel(1);
 			reDrawList(-1);
-        	return true;
-        case R.id.top:
-            listView.setSelectionFromTop(0, 0);
-            nottop = false;
-            getSherlockActivity().invalidateOptionsMenu();
-            return true;
-        case android.R.id.home:
-            // app icon in action bar clicked; go home
-            Intent intent = new Intent(mContext, Main.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
+			return true;
+		case R.id.top:
+			listView.setSelectionFromTop(0, 0);
+			nottop = false;
+			getSherlockActivity().invalidateOptionsMenu();
+			return true;
+		case android.R.id.home:
+			// app icon in action bar clicked; go home
+			Intent intent = new Intent(mContext, Main.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
-	
 	OnScrollListener EndlessScrollListener = new OnScrollListener() {
-		 
-	    private int visibleThreshold = 0;
-	    private int previousTotal = 0;
-	    private boolean loading = true;
-	 
-	   
-	 
-	    public void onScroll(AbsListView view, int firstVisibleItem,
-	            int visibleItemCount, int totalItemCount) {
-	    	if(started)
-	    	{
-		    	if(firstVisibleItem>1)
-		    		nottop = true;
-		    	else
-		    		nottop = false;
-		    	    		
-		    	getSherlockActivity().invalidateOptionsMenu();
-	    		
-		        if (loading) {
-		            if (totalItemCount > previousTotal) {
-		                loading = false;
-		                previousTotal = totalItemCount;
-		            }
-		        }
-		        if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
-		        	new mentionsUpdate(true).execute();
-		            loading = true;
-		        }
-	    	}
-	    }
-	 
-	    public void onScrollStateChanged(AbsListView view, int scrollState) {
-	    }
+
+		private int visibleThreshold = 0;
+		private int previousTotal = 0;
+		private boolean loading = true;
+
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			if (started) {
+				if (firstVisibleItem > 1)
+					nottop = true;
+				else
+					nottop = false;
+
+				getSherlockActivity().invalidateOptionsMenu();
+
+				if (loading) {
+					if (totalItemCount > previousTotal) {
+						loading = false;
+						previousTotal = totalItemCount;
+					}
+				}
+				if (!loading
+						&& (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+					new mentionsUpdate(true).execute();
+					loading = true;
+				}
+			}
+		}
+
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+		}
 	};
-	
-	private class mentionsUpdate extends AsyncTask<Void, Boolean, Boolean>
-	{
+
+	private class mentionsUpdate extends AsyncTask<Void, Boolean, Boolean> {
 		RelativeLayout progress;
 		boolean fromScroll;
-		
+
 		public mentionsUpdate(boolean fromScroll) {
-	        super();
-	        this.fromScroll = fromScroll;
-	    }
-		
+			super();
+			this.fromScroll = fromScroll;
+		}
+
 		@Override
-		protected void onPreExecute()
-		{
-			if(fromScroll)
-			{
-				progress = (RelativeLayout)v.findViewById(R.id.progress);
+		protected void onPreExecute() {
+			if (fromScroll) {
+				progress = (RelativeLayout) v.findViewById(R.id.progress);
 				progress.setVisibility(0);
-				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(list.getLayoutParams());
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+						list.getLayoutParams());
 				params.addRule(RelativeLayout.ABOVE, R.id.progress);
 				params.addRule(RelativeLayout.BELOW, R.id.actionbar);
 				params.addRule(RelativeLayout.CENTER_HORIZONTAL, 1);
-				params.setMargins((int) (10*mContext.getResources().getDisplayMetrics().density), (int) (5*mContext.getResources().getDisplayMetrics().density), (int) (10*mContext.getResources().getDisplayMetrics().density), 0);
+				params.setMargins(
+						(int) (10 * mContext.getResources().getDisplayMetrics().density),
+						(int) (5 * mContext.getResources().getDisplayMetrics().density),
+						(int) (10 * mContext.getResources().getDisplayMetrics().density),
+						0);
 				list.setLayoutParams(params);
 			}
 		}
@@ -277,340 +283,411 @@ public class Mentions extends SherlockFragment implements OnInitListener, OnUtte
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
 			Paging paging = new Paging();
-        	paging.count(10);
-        	paging.maxId(mentions.get(mentions.size()-1).getId());
-        	ResponseList<twitter4j.Status> mentionsNew;
+			paging.count(10);
+			if (tag == 0) {
+				paging.maxId(mentions.get(mentions.size() - 1).getId());
+				ResponseList<twitter4j.Status> mentionsNew;
 
-			try {
-				mentionsNew = twitter.getMentions(paging);
-			} catch (TwitterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return false;
-			}
-			if(mentionsNew==null)
-			{
-				Toast.makeText(mContext, "Connection not avaible", Toast.LENGTH_SHORT).show();
-				return false;
-			}
-			for(int i=1;i<mentionsNew.size();i++)//aggiorno mentions e adapter
-			{
-				mentions.add(mentionsNew.get(i));
-				adapter.add(mentionsNew.get(i));
+				try {
+					mentionsNew = twitter.getMentions(paging);
+				} catch (TwitterException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+				if (mentionsNew == null) {
+					Toast.makeText(mContext, "Connection not avaible",
+							Toast.LENGTH_SHORT).show();
+					return false;
+				}
+				for (int i = 1; i < mentionsNew.size(); i++)// aggiorno mentions
+															// e
+															// adapter
+				{
+					mentions.add(mentionsNew.get(i));
+					adapter.add(mentionsNew.get(i));
+				}
+			} else {
+				paging.maxId(messages.get(messages.size() - 1).getId());
+				ResponseList<twitter4j.DirectMessage> messagesNew;
+
+				try {
+					messagesNew = twitter.getDirectMessages(paging);
+				} catch (TwitterException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+				if (messagesNew == null) {
+					Toast.makeText(mContext, "Connection not avaible",
+							Toast.LENGTH_SHORT).show();
+					return false;
+				}
+				for (int i = 1; i < messagesNew.size(); i++)// aggiorno mentions
+															// e adapter
+				{
+					messages.add(messagesNew.get(i));
+					adapter.add(messagesNew.get(i));
+				}
 			}
 			return true;
 		}
-		
-		@Override 
-		protected void onPostExecute(Boolean result)
-		{
-			if(result)
-			{	            
-	        	adapter.notifyDataSetChanged();
-				if(fromScroll)
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			if (result) {
+				adapter.notifyDataSetChanged();
+				if (fromScroll)
 					progress.setVisibility(8);
-				numeroTweet=numeroTweet+10;
-	    		
+				numeroTweet = numeroTweet + 10;
+
 				list.onRefreshComplete();
-			}else
-			{
-				if(fromScroll)
+			} else {
+				if (fromScroll)
 					progress.setVisibility(8);
 				list.onRefreshComplete();
-				Toast.makeText(mContext, getString(R.string.errorconnection), Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, getString(R.string.errorconnection),
+						Toast.LENGTH_SHORT).show();
 			}
 
 		}
-		
+
 	}
-	
-	private class mentionsProgress extends AsyncTask<Void, Void, Boolean>
-	{
-		
+
+	private class mentionsProgress extends AsyncTask<Void, Void, Boolean> {
+
 		@Override
-		protected void onPreExecute()
-		{
-			dialogP = ProgressDialog.show(mContext, "", 
-	                "Loading. Please wait...", true);
-			
+		protected void onPreExecute() {
+			dialogP = ProgressDialog.show(mContext, "",
+					"Loading. Please wait...", true);
+
 		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			checkForSavedLogin();  
-	        
-	        
-	        Paging count = new Paging();
-	        count.count(numeroTweet);
-			try {
-				mentions = twitter.getMentions(count);
-			} catch (TwitterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return false;
+			checkForSavedLogin();
 
+			Paging count = new Paging();
+			count.count(numeroTweet);
+			if (tag == 0) {
+				try {
+					mentions = twitter.getMentions(count);
+				} catch (TwitterException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+
+				}
+			} else {
+				try {
+					messages = twitter.getDirectMessages(count);
+				} catch (TwitterException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+
+				}
 			}
-			if(mentions==null)
-			{
+			if (mentions == null && messages == null) {
 				getSherlockActivity().runOnUiThread(new Runnable() {
-	                public void run() {
-	                	Toast.makeText(mContext, getString(R.string.errorconnection), Toast.LENGTH_SHORT).show();
-	                }
+					public void run() {
+						Toast.makeText(mContext,
+								getString(R.string.errorconnection),
+								Toast.LENGTH_SHORT).show();
+					}
 				});
 				return false;
-			}else if(mentions.size()==0)
-			{
+			}
+			if ((mentions != null && mentions.size() == 0)
+					|| (messages != null && messages.size() == 0)) {
 				getSherlockActivity().runOnUiThread(new Runnable() {
-					
-	                public void run() {
-	                	Toast.makeText(mContext, getString(R.string.errormentions), Toast.LENGTH_SHORT).show();
-	                }
+
+					public void run() {
+						Toast.makeText(mContext,
+								getString(R.string.errormentions),
+								Toast.LENGTH_SHORT).show();
+					}
 				});
 				getSherlockActivity().finish();
 				return false;
 			}
-			
-	        ArrayList<Object> data=new ArrayList<Object>();
-	        
-	        
-	        for(int i=0;i<mentions.size();i++){
-	        		twitter4j.Status p=mentions.get(i);
 
-	                data.add(p);
-	        }
-	        
-	        adapter=new MentionsAdapter(
-	        			mContext,
-	                        data,
-	                        mentions.get(0).getCreatedAt().getTime(), -1, "mentions");
-	       	        
+			ArrayList<Object> data = new ArrayList<Object>();
+
+			if (tag == 0) {
+				for (int i = 0; i < mentions.size(); i++) {
+					twitter4j.Status p = mentions.get(i);
+
+					data.add(p);
+				}
+
+				adapter = new MentionsAdapter(mContext, data, mentions.get(0)
+						.getCreatedAt().getTime(), -1, "mentions");
+			} else {
+				for (int i = 0; i < messages.size(); i++) {
+					twitter4j.DirectMessage p = messages.get(i);
+
+					data.add(p);
+				}
+
+				adapter = new MentionsAdapter(mContext, data, messages.get(0)
+						.getCreatedAt().getTime(), -1, "messages");
+			}
+
 			return true;
 		}
-		
-		@Override
-		protected void onPostExecute(Boolean result)
-		{
-			if(result)
-			{
-				SharedPreferences settings = PreferenceManager
-		                .getDefaultSharedPreferences(mContext);
-				Editor editor = settings.edit();
-	    		editor.putString("lastTweet", mentions.get(0).getId()+"");
-	    		editor.putString("lastTweetUser", mentions.get(0).getUser().getScreenName());
-	    		editor.commit();
-	    		
-				if(dialogP!=null)
-					dialogP.cancel();
-				
-				list = (PullToRefreshListView) v.findViewById(R.id.mentionsListView);
-				list.setOnRefreshListener(new OnRefreshListener() {
-				    public void onRefresh() {
-				        // Do work to refresh the list here.
-			        	new mentionsUpdate(false).execute();
-				    }
-				});
-				
-				listView = list.getRefreshableView();
-				
-		        listView.setAdapter(adapter);
-		        listView.setOnItemClickListener(onClickMention);		
-	            list.setOnScrollListener(EndlessScrollListener);
-	    		started = true;
 
-	            DisplayMetrics metrics = new DisplayMetrics();
-	            getSherlockActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-	            float logicalDensity = metrics.density;
-	            
-	        	listView.setDividerHeight((int) (1 * logicalDensity + 0.5f));
-			}else if(mentions.size()!=0)
-			{
-				if(dialogP!=null)
+		@Override
+		protected void onPostExecute(Boolean result) {
+			if (result) {
+				SharedPreferences settings = PreferenceManager
+						.getDefaultSharedPreferences(mContext);
+				Editor editor = settings.edit();
+				if (tag == 0) {
+					editor.putString("lastTweet", mentions.get(0).getId() + "");
+					editor.putString("lastTweetUser", mentions.get(0).getUser()
+							.getScreenName());
+				} else {
+					editor.putString("lastTweetMessage", messages.get(0)
+							.getId() + "");
+					editor.putString("lastTweetMessageUser", messages.get(0)
+							.getSender().getScreenName());
+				}
+				editor.commit();
+
+				if (dialogP != null)
 					dialogP.cancel();
-				Toast.makeText(mContext, getString(R.string.errorconnection), Toast.LENGTH_SHORT).show();
+
+				list = (PullToRefreshListView) v
+						.findViewById(R.id.mentionsListView);
+				list.setOnRefreshListener(new OnRefreshListener() {
+					public void onRefresh() {
+						// Do work to refresh the list here.
+						new mentionsUpdate(false).execute();
+					}
+				});
+
+				listView = list.getRefreshableView();
+
+				listView.setAdapter(adapter);
+				listView.setOnItemClickListener(onClickMention);
+				list.setOnScrollListener(EndlessScrollListener);
+				started = true;
+
+				DisplayMetrics metrics = new DisplayMetrics();
+				getSherlockActivity().getWindowManager().getDefaultDisplay()
+						.getMetrics(metrics);
+				float logicalDensity = metrics.density;
+
+				listView.setDividerHeight((int) (1 * logicalDensity + 0.5f));
+			}
+			if ((mentions != null && mentions.size() == 0)
+					|| (messages != null && messages.size() == 0)) {
+				if (dialogP != null)
+					dialogP.cancel();
+				Toast.makeText(mContext, getString(R.string.errorconnection),
+						Toast.LENGTH_SHORT).show();
 			}
 
 		}
 
-
 	}
-	
-	
-	protected final OnItemClickListener onClickMention = new OnItemClickListener()
-	{
-		public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-			if(mTts==null || !mTts.isSpeaking())
-			{
+
+	protected final OnItemClickListener onClickMention = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+				long id) {
+			if (mTts == null || !mTts.isSpeaking()) {
 				clickedMention = position;
 				mTts = new TextToSpeech(mContext, Mentions.this);
 			}
-		
+
 		}
 	};
 
-	protected void reDrawList(int position)
-	{
-		ArrayList<Object> data=new ArrayList<Object>();
-        
-        
-        for(int z=0;z<mentions.size();z++){
-        		twitter4j.Status p=mentions.get(z);
+	protected void reDrawList(int position) {
+		ArrayList<Object> data = new ArrayList<Object>();
 
-                data.add(p);
-        }
-        adapter=new MentionsAdapter(
-    			mContext,
-                    data,
-                    mentions.get(0).getCreatedAt().getTime(), position, "mentions");
+		if (tag == 0) {
+			for (int z = 0; z < mentions.size(); z++) {
+				twitter4j.Status p = mentions.get(z);
 
-        int index = listView.getFirstVisiblePosition();
-        View v = listView.getChildAt(0);
-        int top = (v == null) ? 0 : v.getTop();
-        
-        listView.setAdapter(adapter);
+				data.add(p);
+			}
+			adapter = new MentionsAdapter(mContext, data, mentions.get(0)
+					.getCreatedAt().getTime(), position, "mentions");
+		} else {
+			for (int z = 0; z < messages.size(); z++) {
+				twitter4j.DirectMessage p = messages.get(z);
 
-        listView.setSelectionFromTop(index, top);
+				data.add(p);
+			}
+			adapter = new MentionsAdapter(mContext, data, messages.get(0)
+					.getCreatedAt().getTime(), position, "messages");
+		}
+
+		int index = listView.getFirstVisiblePosition();
+		View v = listView.getChildAt(0);
+		int top = (v == null) ? 0 : v.getTop();
+
+		listView.setAdapter(adapter);
+
+		listView.setSelectionFromTop(index, top);
 	}
 
-	
 	protected AccessToken getAccessToken() {
-		SharedPreferences settings = mContext.getSharedPreferences("Auth", mContext.MODE_PRIVATE);
+		SharedPreferences settings = mContext.getSharedPreferences("Auth",
+				mContext.MODE_PRIVATE);
 		String token = settings.getString("accessTokenToken", "");
 		String tokenSecret = settings.getString("accessTokenSecret", "");
-		if (token!=null && tokenSecret!=null && !"".equals(tokenSecret) && !"".equals(token)){
+		if (token != null && tokenSecret != null && !"".equals(tokenSecret)
+				&& !"".equals(token)) {
 			return new AccessToken(token, tokenSecret);
 		}
 		return null;
 	}
-	
-	protected boolean checkForSavedLogin() {  
-      	 // Get Access Token and persist it  
-      	 AccessToken a = getAccessToken();  
-      	 if (a==null) 
-      		 {
-      		 	return false; //if there are no credentials stored then return to usual activity  
-      		 }
-      	  
-      	 // initialize Twitter4J  
-      	 twitter = new TwitterFactory().getInstance();  
-      	 twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);  
-      	 twitter.setOAuthAccessToken(a);  
-      	 ((SpeakBirdApplication)getSherlockActivity().getApplication()).setTwitter(twitter);  
-      	     
-      	 return true;
-      	}
 
+	protected boolean checkForSavedLogin() {
+		// Get Access Token and persist it
+		AccessToken a = getAccessToken();
+		if (a == null) {
+			return false; // if there are no credentials stored then return to
+							// usual activity
+		}
+
+		// initialize Twitter4J
+		twitter = new TwitterFactory().getInstance();
+		twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
+		twitter.setOAuthAccessToken(a);
+		((SpeakBirdApplication) getSherlockActivity().getApplication())
+				.setTwitter(twitter);
+
+		return true;
+	}
 
 	public void onInit(int arg0) {
-			Locale localeI = getLocaleMentions();
+		Locale localeI = getLocaleMentions();
 
-	        if(mTts.isLanguageAvailable(localeI)>0)
-	        {   
-	        	mTts.setLanguage(localeI); 
-	        	speaking=true;
-	        	getSherlockActivity().invalidateOptionsMenu();
+		if (mTts.isLanguageAvailable(localeI) > 0) {
+			mTts.setLanguage(localeI);
+			speaking = true;
+			getSherlockActivity().invalidateOptionsMenu();
 
+			if (settings.getBoolean("notificationSpeaking", false)) {
+				int icon = R.drawable.icon;
+				CharSequence tickerText = getString(R.string.isSpeaking);
+				long when = System.currentTimeMillis();
 
-	        	if(settings.getBoolean("notificationSpeaking", false))
-	        	{
-	        		int icon = R.drawable.icon;
-	        		CharSequence tickerText = getString(R.string.isSpeaking);
-	        		long when = System.currentTimeMillis();
+				Notification notification = new Notification(icon, tickerText,
+						when);
 
-	        		Notification notification = new Notification(icon, tickerText, when);
-	        		
-	        		CharSequence contentTitle = "SpeakBird notification";
-	        		CharSequence contentText = getString(R.string.isSpeaking);
-	        		
-	        		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0,
-	        		        new Intent(), 0);
+				CharSequence contentTitle = "SpeakBird notification";
+				CharSequence contentText = getString(R.string.isSpeaking);
 
-	        		notification.setLatestEventInfo(mContext, contentTitle, contentText, contentIntent);
-	        		
-	        		final int HELLO_ID = 1;
-	        		
-	        		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+				PendingIntent contentIntent = PendingIntent.getActivity(
+						mContext, 0, new Intent(), 0);
 
+				notification.setLatestEventInfo(mContext, contentTitle,
+						contentText, contentIntent);
 
-	        		mNotificationManager.notify(HELLO_ID, notification);
-	        	}
-	        	reDrawList(clickedMention-1);
-    			String myText1 = "Menzionato da "+ mentions.get(clickedMention-1).getUser().getScreenName() +" \" "+mentions.get(clickedMention-1).getText();
+				final int HELLO_ID = 1;
 
-            	HashMap<String, String> myHashAlarm = new HashMap();
+				notification.flags |= Notification.FLAG_ONGOING_EVENT;
 
-            	mTts.setOnUtteranceCompletedListener(this);
-            	
-            	myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
-            	        "end of wakeup message ID");
-            	mTts.speak(myText1, TextToSpeech.QUEUE_ADD, myHashAlarm);
-	        	
-	        }
+				mNotificationManager.notify(HELLO_ID, notification);
+			}
+			reDrawList(clickedMention - 1);
+			String myText1;
+			if (tag == 0)
+				myText1 = "Menzionato da "
+						+ mentions.get(clickedMention - 1).getUser()
+								.getScreenName() + " \" "
+						+ mentions.get(clickedMention - 1).getText();
+			else
+				myText1 = "Menzionato da "
+						+ messages.get(clickedMention - 1).getSender()
+								.getScreenName() + " \" "
+						+ messages.get(clickedMention - 1).getText();
+
+			HashMap<String, String> myHashAlarm = new HashMap();
+
+			mTts.setOnUtteranceCompletedListener(this);
+
+			myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+					"end of wakeup message ID");
+			mTts.speak(myText1, TextToSpeech.QUEUE_ADD, myHashAlarm);
+
+		}
 
 	}
 
 	public void onUtteranceCompleted(String arg0) {
-		if(controls==1 && clickedMention>1)
-		{
+		if (controls == 1 && clickedMention > 1) {
 			clickedMention--;
 			getSherlockActivity().runOnUiThread(new Runnable() {
-	            public void run() {
-	            	reDrawList(clickedMention-1);
-	            }
+				public void run() {
+					reDrawList(clickedMention - 1);
+				}
 			});
-			String myText1 = "Menzionato da "+ mentions.get(clickedMention-1).getUser().getScreenName() +" \" "+mentions.get(clickedMention-1).getText();
+			String myText1;
+			if (tag == 0)
+				myText1 = "Menzionato da "
+						+ mentions.get(clickedMention - 1).getUser()
+								.getScreenName() + " \" "
+						+ mentions.get(clickedMention - 1).getText();
+			else
+				myText1 = "Menzionato da "
+						+ messages.get(clickedMention - 1).getSender()
+								.getScreenName() + " \" "
+						+ messages.get(clickedMention - 1).getText();
 
-        	HashMap<String, String> myHashAlarm = new HashMap();
+			HashMap<String, String> myHashAlarm = new HashMap();
 
-        	mTts.setOnUtteranceCompletedListener(this);
-        	
-        	myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
-        	        "end of wakeup message ID");
-        	mTts.speak(myText1, TextToSpeech.QUEUE_ADD, myHashAlarm);
-		}else	
-		{
+			mTts.setOnUtteranceCompletedListener(this);
+
+			myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+					"end of wakeup message ID");
+			mTts.speak(myText1, TextToSpeech.QUEUE_ADD, myHashAlarm);
+		} else {
 			getSherlockActivity().runOnUiThread(new Runnable() {
 				public void run() {
-					speaking=false;
+					speaking = false;
 					getSherlockActivity().invalidateOptionsMenu();
-	        		reDrawList(-1);
-	        		mNotificationManager.cancelAll();
-            }
-        });
-		mTts.stop();
-		mTts.shutdown();
+					reDrawList(-1);
+					mNotificationManager.cancelAll();
+				}
+			});
+			mTts.stop();
+			mTts.shutdown();
 		}
 	}
 
-	
-    protected Locale getLocaleMentions()
-    {
-    	String localeS = settings.getString("language", "");
+	protected Locale getLocaleMentions() {
+		String localeS = settings.getString("language", "");
 
-    	if(localeS.length()==0)
-    		return Locale.getDefault();
-    	if(localeS.compareTo("UK")==0)
-    		return Locale.UK;
-    	else if(localeS.compareTo("US")==0)
-    		return Locale.US;
-    	else if(localeS.compareTo("FRENCH")==0)
-    		return Locale.FRANCE;
-    	else if(localeS.compareTo("ITALIAN")==0)
-    		return Locale.ITALY;
-    	else if(localeS.compareTo("SPANISH")==0)
-    		return new Locale("spa", "ESP");
-    	else if(localeS.compareTo("GERMAN")==0)
-    		return Locale.GERMANY;
+		if (localeS.length() == 0)
+			return Locale.getDefault();
+		if (localeS.compareTo("UK") == 0)
+			return Locale.UK;
+		else if (localeS.compareTo("US") == 0)
+			return Locale.US;
+		else if (localeS.compareTo("FRENCH") == 0)
+			return Locale.FRANCE;
+		else if (localeS.compareTo("ITALIAN") == 0)
+			return Locale.ITALY;
+		else if (localeS.compareTo("SPANISH") == 0)
+			return new Locale("spa", "ESP");
+		else if (localeS.compareTo("GERMAN") == 0)
+			return Locale.GERMANY;
 		return Locale.getDefault();
 
-    }
-
-	public boolean isNetworkAvailable() {
-	    ConnectivityManager connectivityManager 
-	          = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-	    return activeNetworkInfo != null;
 	}
 
-		
-}
+	public boolean isNetworkAvailable() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) mContext
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager
+				.getActiveNetworkInfo();
+		return activeNetworkInfo != null;
+	}
 
+}
