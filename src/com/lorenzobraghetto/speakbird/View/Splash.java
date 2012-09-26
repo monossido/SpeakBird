@@ -93,7 +93,6 @@ public class Splash extends Activity implements OnInitListener {
 	}
 
 	public void onInit(int arg0) {
-		//mTts.shutdown();
 		int tts = mTts.isLanguageAvailable(Locale.getDefault());
 		if ((tts != -1 || tts != -2) && a != null)
 		{
@@ -143,7 +142,8 @@ public class Splash extends Activity implements OnInitListener {
 	public void onStop()
 	{
 		super.onStop();
-		mTts.shutdown();
+		if (mTts != null)
+			mTts.shutdown();
 	}
 
 	@Override

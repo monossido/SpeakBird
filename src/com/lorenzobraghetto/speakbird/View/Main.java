@@ -18,17 +18,8 @@
  */
 package com.lorenzobraghetto.speakbird.View;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.lorenzobraghetto.speakbird.R;
-
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -37,84 +28,81 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.lorenzobraghetto.speakbird.R;
 
 public class Main extends SherlockActivity {
-    
+
 	private SharedPreferences prefs;
-	private Context mContext;
-	private Dialog dialog;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        mContext=this;
-		dialog = new Dialog(mContext);
 
-        
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
 		prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
-		
+				.getDefaultSharedPreferences(getApplicationContext());
+
 		String lastTweetUser = prefs.getString("lastTweetUser", "");
-		if(lastTweetUser.length()>0)
+		if (lastTweetUser.length() > 0)
 		{
-			((RelativeLayout)findViewById(R.id.relativeLayout2)).setVisibility(0);
-			((TextView)findViewById(R.id.user)).setText("@"+lastTweetUser);
+			((RelativeLayout) findViewById(R.id.relativeLayout2)).setVisibility(0);
+			((TextView) findViewById(R.id.user)).setText("@" + lastTweetUser);
 		}
-        
-       
-        
-        Button button1 = (Button)findViewById(R.id.button1);  
-        button1.setOnClickListener(new OnClickListener() {    
 
-		public void onClick(View arg0) {
-			Intent mentions = new Intent(getBaseContext(), Tweet.class);
-			startActivity(mentions);
-		}
-        
-       });
-        
-        Button button2 = (Button)findViewById(R.id.button2);  
-        button2.setOnClickListener(new OnClickListener() {    
+		Button button1 = (Button) findViewById(R.id.button1);
+		button1.setOnClickListener(new OnClickListener() {
 
-		public void onClick(View arg0) {
-			Intent messages = new Intent(getBaseContext(), Tweet.class);
-			messages.putExtra("messages", true);
-			startActivity(messages);
-		}
-        
-       });
-        
-        Button button3 = (Button)findViewById(R.id.button3);  
-        button3.setOnClickListener(new OnClickListener() {    
+			public void onClick(View arg0) {
+				Intent mentions = new Intent(getBaseContext(), Tweet.class);
+				startActivity(mentions);
+			}
 
-		public void onClick(View arg0) {
-			Intent settings = new Intent(getBaseContext(), Settings.class);
-			startActivity(settings);
+		});
+
+		Button button2 = (Button) findViewById(R.id.button2);
+		button2.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View arg0) {
+				Intent messages = new Intent(getBaseContext(), Tweet.class);
+				messages.putExtra("messages", true);
+				startActivity(messages);
+			}
+
+		});
+
+		Button button3 = (Button) findViewById(R.id.button3);
+		button3.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View arg0) {
+				Intent settings = new Intent(getBaseContext(), Settings.class);
+				startActivity(settings);
+			}
+
+		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.xml.menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.info:
+			Intent info = new Intent(getApplicationContext(), About.class);
+			startActivity(info);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-        
-       });
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.xml.menu, menu);
-        return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-        case R.id.info:
-			 Intent info = new Intent(getApplicationContext(), About.class);
-			 startActivity(info);
-			 return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
+	}
 
 }
