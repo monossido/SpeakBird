@@ -230,7 +230,6 @@ public class Messages extends Mentions
 				progress.setVisibility(0);
 				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(listM.getLayoutParams());
 				params.addRule(RelativeLayout.ABOVE, R.id.progress);
-				params.addRule(RelativeLayout.BELOW, R.id.actionbar);
 				params.addRule(RelativeLayout.CENTER_HORIZONTAL, 1);
 				params.setMargins((int) (10 * mContext.getResources().getDisplayMetrics().density), (int) (5 * mContext.getResources().getDisplayMetrics().density), (int) (10 * mContext.getResources().getDisplayMetrics().density), 0);
 				listM.setLayoutParams(params);

@@ -49,7 +49,6 @@ import com.lorenzobraghetto.speakbird.Logic.SpeakBirdApplication;
 
 public class Splash extends Activity implements OnInitListener {
 
-	static final private int TTS_CHECK_CODE = 1;
 	private TextToSpeech mTts;
 	private SharedPreferences authsettings;
 	private String CONSUMER_KEY = "CaLz8BjfUQdFZ19i0Ni5mA";
